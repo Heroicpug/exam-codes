@@ -1,0 +1,15 @@
+import turtle
+turtle.setup(800,600)
+turtle.shape("turtle")
+turtle.bgcolor("white")
+turtle.pensize(2)
+turtle.pencolor("blue")
+turtle.speed(100)
+for n in range(75):
+    turtle.forward(100)
+    turtle.left(90)
+    turtle.forward(100)
+    turtle.left(90)
+    turtle.forward(100)
+    turtle.left(90)
+    turtle.left(5)
