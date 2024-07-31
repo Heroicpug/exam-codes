@@ -1,0 +1,367 @@
+			FIRST COME FIRST SERVE SCHEDULLING
+print("FIRST COME FIRST SERVE SCHEDULLING")
+n= int(input("Enter number of processes : "))
+d = dict()
+ 
+for i in range(n):
+    key = "P"+str(i+1)
+    a = int(input("Enter arrival time of process"+str(i+1)+": "))
+    b = int(input("Enter burst time of process"+str(i+1)+": "))
+    l = []
+    l.append(a)
+    l.append(b)
+    d[key] = l
+ 
+d = sorted(d.items(), key=lambda item: item[1][0])
+ 
+ET = []
+for i in range(len(d)):
+    # first process
+    if(i==0):
+        ET.append(d[i][1][1])
+ 
+    # get prevET + newBT
+    else:
+        ET.append(ET[i-1] + d[i][1][1])
+ 
+TAT = []
+for i in range(len(d)):
+    TAT.append(ET[i] - d[i][1][0])
+ 
+WT = []
+for i in range(len(d)):
+    WT.append(TAT[i] - d[i][1][1])
+ 
+avg_WT = 0
+for i in WT:
+    avg_WT +=i
+avg_WT = (avg_WT/n)
+
+avg_TAT = 0
+for i in TAT:
+    avg_TAT +=i
+avg_TAT = (avg_TAT/n)
+ 
+print("Process | Arrival | Burst | Exit | Turn Around | Wait |")
+for i in range(n):
+      print("   ",d[i][0],"   |   ",d[i][1][0]," |    ",d[i][1][1]," |    ",ET[i],"  |    ",TAT[i],"  |   ",WT[i],"   |  ")
+print("Average Waiting Time: ",avg_WT)
+print("Average Waiting Time: ",avg_TAT)
+				output
+FIRST COME FIRST SERVE SCHEDULLING
+Enter number of processes : 5
+Enter arrival time of process1: 1
+Enter burst time of process1: 7
+Enter arrival time of process2: 3
+Enter burst time of process2: 3
+Enter arrival time of process3: 6
+Enter burst time of process3: 2
+Enter arrival time of process4: 7
+Enter burst time of process4: 10
+Enter arrival time of process5: 9
+Enter burst time of process5: 8
+Process | Arrival | Burst | Exit | Turn Around | Wait |
+    P1    |    1  |     7  |     7   |     6   |    -1    |  
+    P2    |    3  |     3  |     10   |     7   |    4    |  
+    P3    |    6  |     2  |     12   |     6   |    4    |  
+    P4    |    7  |     10  |     22   |     15   |    5    |  
+    P5    |    9  |     8  |     30   |     21   |    13    |  
+Average Waiting Time:  5.0
+Average Waiting Time:  11.0
+
+
+
+
+
+
+
+
+
+Shortest Job Scheduling
+
+# function for swapping
+def swap(b, c):
+ b, c = c, b
+ return b, c
+#main function starts
+print("SHORTEST JOB FIRST SCHEDULLING")
+a = []
+Cmp_time = 0
+Total_WT = 0
+Total_TAT = 0
+Avg_WT = 0
+Avg_TAT = 0
+n = int(input("Enter the number of processes: "))
+print("Enter the Arrival time and Burst time of the process")
+print("AT BT")
+for i in range(n):
+ AT, BT = map(int, input().split())
+ a.append({'id': i+1, 'AT': AT, 'BT': BT})
+ # if process are arrived at different time
+ # then sort the process on the basis of AT
+for i in range(n):
+ for j in range(n-i-1):
+     if a[j]['AT'] > a[j+1]['AT']:
+         a[j]['id'], a[j+1]['id'] = swap(a[j]['id'], a[j+1]['id'])
+         a[j]['AT'], a[j+1]['AT'] = swap(a[j]['AT'], a[j+1]['AT'])
+         a[j]['BT'], a[j+1]['BT'] = swap(a[j]['BT'], a[j+1]['BT'])
+if (a[0]['AT']==1):
+ Cmp_time = 1
+a[0]['WT'] = a[0]['AT']
+Cmp_time = Cmp_time+a[0]['BT']
+a[0]['TAT'] = Cmp_time - a[0]['AT'] 
+Total_WT = Total_WT + a[0]['WT']
+Total_TAT = Total_TAT + a[0]['TAT']
+for i in range(1, n):
+ mini = a[i]['BT']
+ for j in range(i, n):
+     if mini > a[j]['BT'] and a[j]['AT'] <= Cmp_time:
+         mini = a[j]['BT']
+         a[i]['id'], a[j]['id'] = swap(a[i]['id'], a[j]['id'])
+         a[i]['AT'], a[j]['AT'] = swap(a[i]['AT'], a[j]['AT'])
+         a[i]['BT'], a[j]['BT'] = swap(a[i]['BT'], a[j]['BT'])
+ 
+ 
+ 
+ # completion time of the process
+ Cmp_time = Cmp_time + a[i]['BT']
+ # Turn Around Time of the process
+ # compl - Arrival
+ a[i]['TAT'] = Cmp_time - a[i]['AT']
+ # Waiting Time of the process
+ # TAT - BT
+ a[i]['WT'] = a[i]['TAT'] - a[i]['BT']
+ Total_WT = Total_WT + a[i]['WT']
+ Total_TAT = Total_TAT + a[i]['TAT']
+Avg_WT = Total_WT / n
+Avg_TAT = Total_TAT / n
+# Printing of the results
+print("ID\tCAT\tTAT\tWT")
+for i in range(n):
+ Cmp_time = a[i]['TAT'] + a[i]['AT']
+ print(f"{a[i]['id']}\t{Cmp_time}\t{a[i]['TAT']}\t{a[i]['WT']}")
+print(f"Avg turnaround time is: {Avg_TAT:.2f}")
+print(f"Avg waiting time is: {Avg_WT:.2f}")
+
+				output
+SHORTEST JOB FIRST SCHEDULLING
+Enter the number of processes: 5
+Enter the Arrival time and Burst time of the process
+AT BT
+1 7
+3 3
+6 2
+7 10
+9 8
+ID	CAT	TAT	WT
+1	8	7	1
+3	10	4	2
+2	13	10	7
+5	21	12	4
+4	31	24	14
+Avg turnaround time is: 11.40
+Avg waiting time is: 5.60
+
+
+
+
+
+
+
+
+
+
+Priority Scheduling
+print("\n\nPRIORITY NON-PRE-EMPTIVE SCHEDULING")
+bt = []
+pri = []
+at = []
+pid = []
+n = 0
+print("Enter the number of Processes for Scheduling: ", end="")
+n = int(input())
+bt = [0] * n
+pri = [0] * n
+at = [0] * n
+pid = ["P" + str(i+1) for i in range(n)]
+print("AT BT PRI")
+for i in range(n):
+    at[i],bt[i], pri[i]=map(int, input().split())
+ 
+CAT = [0] * n
+waitingTime = [0] * n
+turnAroundTime = [0] * n
+bt = bt.copy()
+at = at.copy()
+prt = pri.copy()
+pid = pid.copy()
+ 
+#sorting based on arrival time and priority
+for i in range(n):
+    for j in range(n - i - 1):
+ 
+     # Sorting according to pri when arrival timings are the same
+        if (at[j]!=0 and pri[j] > pri[j + 1]):
+ 
+             # Swapping pri
+             pri[j], pri[j + 1] = pri[j + 1], pri[j]
+             # Swapping burst time
+             bt[j], bt[j + 1] = bt[j + 1], bt[j]
+             # Swapping process identity
+             pid[j], pid[j + 1] = pid[j + 1], pid[j]
+CAT[0] = at[0] + bt[0]
+turnAroundTime[0] = CAT[0] - at[0]
+waitingTime[0] = turnAroundTime[0] - bt[0]
+for i in range(1, n):
+    CAT[i] = bt[i] + CAT[i - 1]
+    turnAroundTime[i] = CAT[i] - at[i]
+    waitingTime[i] = turnAroundTime[i] - bt[i]
+Avg_TAT = sum(waitingTime) / n
+Avg_WT = sum(turnAroundTime) / n
+print("Priority Scheduling Algorithm:")
+print(f"{'PId'}\t{'AT'}\t{'BT'}\t{'PRI'}\t{'CAT'}\t{'WAT'}\t{'TAT'}")
+for i in range(n):
+ 
+    print(f"{pid[i]}\t{at[i]}\t{bt[i]}\t{prt[i]}\t{CAT[i]}\t{waitingTime[i]}\t{turnAroundTime[i]}")
+
+print(f"Avg turnaround time is: {Avg_TAT:.2f}")
+print(f"Avg waiting time is: {Avg_WT:.2f}")
+
+OUTPUT:
+PRIORITY NON-PRE-EMPTIVE SCHEDULING
+Enter the number of Processes for Scheduling: 7
+AT BT PRI
+0 3 2
+2 5 6
+1 4 3
+4 2 5
+6 9 7
+5 4 4 
+7 10 10
+Priority Scheduling Algorithm:
+PId	AT	BT	PRI	CAT	WAT	TAT
+P1	0	3	2	3	0	3
+P3	2	4	6	7	1	5
+P6	1	4	3	11	6	10
+P4	4	2	5	13	7	9
+P2	6	5	7	18	7	12
+P5	5	9	4	27	13	22
+P7	7	10	10	37	20	30
+Avg turnaround time is: 7.71
+Avg waiting time is: 13.00
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Round Robin
+def round_robin(n, arrival_time, burst_time, time_slot):
+     wait_time = 0
+     ta_time = 0
+     temp_burst_time = burst_time.copy()
+     x = n
+     CT = 0
+     counter = 0
+     i = 0
+     print("PID\tBT\tCT\tTAT\tWAT")
+     while x != 0:
+         if temp_burst_time[i] <= time_slot and temp_burst_time[i] > 0:
+            CT += temp_burst_time[i]
+            temp_burst_time[i] = 0
+            counter = 1
+         elif temp_burst_time[i] > 0:
+             temp_burst_time[i] -= time_slot
+             CT += time_slot
+         if temp_burst_time[i] == 0 and counter == 1:
+             x -= 1
+             print(f"P{i+1}\t {burst_time[i]}\t{CT}\t {CT-arrival_time[i]}\t{CT-arrival_time[i]-burst_time[i]}")
+             wait_time += CT - arrival_time[i] - burst_time[i]
+             ta_time += CT - arrival_time[i]
+             counter = 0
+         if i == n - 1:
+             i = 0
+         elif arrival_time[i + 1] <= CT:
+             i += 1
+         else:
+             i = 0
+     average_wait_time = wait_time * 1.0 / n
+     average_turnaround_time = ta_time * 1.0 / n
+     print(f"\nAverage Waiting Time: {average_wait_time}")
+     print(f"Avg Turnaround Time: {average_turnaround_time}")
+print("\n\nROUND-ROBIN SCHEDULING")
+n = int(input("Enter Number of Processes: "))
+arrival_time = []
+burst_time = []
+arrival_time = [0] * n
+burst_time = [0] * n
+pid = ["P" + str(i+1) for i in range(n)]
+print("AT BT ")
+for i in range(n):
+  	arrival_time[i],burst_time[i]=map(int, input().split())
+time_slot = int(input("Enter Time Slot: "))
+round_robin(n, arrival_time, burst_time, time_slot)
+
+
+
+
+
+
+
+
+
+
+
+Output:
+
+ROUND-ROBIN SCHEDULING
+Enter Number of Processes: 5
+AT BT 
+0 5
+1 3
+2 1
+3 2
+4 3
+Enter Time Slot: 2
+PID	BT	CT	TAT	WAT
+P3	 1	5	 3	2
+P4	 2	7	 4	2
+P2	 3	12	 11	8
+P5	 3	13	 9	6
+P1	 5	14	 14	9
+
+Average Waiting Time: 5.4
+Avg Turnaround Time: 8.2
+
+
+
